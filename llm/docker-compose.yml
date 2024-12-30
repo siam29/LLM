@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: django_web  # Custom name for the Django web container
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True  # Set the DEBUG variable for Django
+      - DJANGO_SECRET_KEY=your_secret_key_here  # Set a Django secret key
+      - DATABASE_URL=postgres://siam:siam123@postgresDB_Container:5432/siam  # Use Scrapy's DB container name
+
+  db:
+    image: postgres:14
+    container_name: postgres_db  # Custom name for the PostgreSQL container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: siam
+      POSTGRES_USER: siam
+      POSTGRES_PASSWORD: siam123
+    networks:
+      - app_network  # Ensure the database is part of the same network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama:/root/.ollama
+    restart: unless-stopped
+    command: serve
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge  # Ensure the network is shared between Django and Scrapy services

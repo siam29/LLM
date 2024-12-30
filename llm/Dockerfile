@@ -1,14 +1,20 @@
-FROM python:3.11-slim
+# Use the official Python 3.9-slim image
+FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y curl
+# Set the working directory in the container
+WORKDIR /app
 
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it
-RUN chmod +x /usr/local/bin/wait-for-it
+# Copy the requirements.txt file to the container
+COPY requirements.txt /app/
 
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy the rest of the application code to the container
+COPY . /app/
 
-COPY . .
+# Expose port 8000 for the Django application
+EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Set the default command to run the Django server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

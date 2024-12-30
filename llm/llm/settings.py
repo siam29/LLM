@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'scraping_db',  # From DB_NAME
         'USER': 'siam',         # From DB_USERNAME
         'PASSWORD': 'siam123',  # From DB_PASSWORD
-        'HOST': 'localhost',    # Change to 'localhost' if running in the same container
+        'HOST': 'postgresDB_Container',    # Change to 'localhost' if running in the same container
         'PORT': '5432',         # From DB_PORT
     }
 }
